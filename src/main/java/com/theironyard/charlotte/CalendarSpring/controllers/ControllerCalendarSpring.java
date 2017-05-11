@@ -50,12 +50,16 @@ public class ControllerCalendarSpring {
         List<Event> timeCheck = events.findAllByDateTimeBetween(startTime, eventEndTime);
         List<Event> timeCheckEnd = events.findAllByEndTimeBetween(startTime, eventEndTime);
         if (userName != null) {
-            if (currentTime.isBefore(startTime) && startTime.isBefore(eventEndTime) && timeCheck.isEmpty() &&
-                   timeCheckEnd.isEmpty()) {
+            if(startTime.isBefore(eventEndTime)) {
+                System.out.println("Entered time of " + startTime + " is before " + eventEndTime);
+
+            }else if(timeCheck.isEmpty() || timeCheckEnd.isEmpty()) {
+                System.err.println("Not valid");
+
+            }else if(currentTime.isBefore(startTime) && startTime.isBefore(eventEndTime) && timeCheck.isEmpty() &&
+                timeCheckEnd.isEmpty()) {
                 Event event = new Event(description, startTime, eventEndTime, users.findFirstByName(userName));
                 events.save(event);
-            } else if (startTime.isBefore(eventEndTime)) {
-                System.out.println("Entered time of " + startTime + " is before " + eventEndTime);
             }
 
         } return "redirect:/";
