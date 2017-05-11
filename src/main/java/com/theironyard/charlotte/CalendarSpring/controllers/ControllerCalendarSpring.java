@@ -17,6 +17,7 @@ import java.util.List;
 
 @Controller
 public class ControllerCalendarSpring {
+    LocalDateTime currentTime = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
     @Autowired
     EventRepo events;
 
@@ -30,7 +31,7 @@ public class ControllerCalendarSpring {
         if (userName != null) {
             User user = users.findFirstByName(userName);
             model.addAttribute("user", user);
-            model.addAttribute("now", LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS));
+            model.addAttribute("now", currentTime);
             //truncated only puts the time down to the seconds not the milliseconds.
         }
         model.addAttribute("events", eventEntities);
@@ -38,13 +39,19 @@ public class ControllerCalendarSpring {
     }
 
     @RequestMapping(path = "/create-event", method = RequestMethod.POST)
-    public String createEvent(HttpSession session, String description, String dateTime) {
+    public String createEvent(HttpSession session, String description, String dateTime, String endTime) {
         String userName = (String) session.getAttribute("userName");
+        LocalDateTime startTime = LocalDateTime.parse(dateTime);
+        LocalDateTime eventEndTime = LocalDateTime.parse(endTime);
         if (userName != null) {
-            Event event = new Event(description, LocalDateTime.parse(dateTime), users.findFirstByName(userName));
-            events.save(event);
-        }
-        return "redirect:/";
+            if (currentTime.isBefore(startTime) && (startTime.isBefore(eventEndTime))) {
+                Event event = new Event(description, startTime, eventEndTime, users.findFirstByName(userName));
+                events.save(event);
+            } else if (startTime.isBefore(eventEndTime)) {
+                System.out.println("Entered time of " + startTime + "is before " + eventEndTime);
+            }
+
+        } return "redirect:/";
     }
 
     @RequestMapping(path = "/login", method = RequestMethod.POST)

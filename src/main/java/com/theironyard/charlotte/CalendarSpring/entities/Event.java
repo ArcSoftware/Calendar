@@ -16,15 +16,20 @@ public class Event {
     @Column(nullable = false)
     LocalDateTime dateTime;
 
+    @Column(nullable = false)
+    LocalDateTime endTime;
+
     @ManyToOne
     User user;
 
     public Event() {
     }
 
-    public Event(String description, LocalDateTime dateTime, User user) {
+    public Event(String description, LocalDateTime dateTime, LocalDateTime endTime, User user) {
         this.description = description;
         this.dateTime = dateTime;
+        this.endTime = endTime;
         this.user = user;
+
     }
 }

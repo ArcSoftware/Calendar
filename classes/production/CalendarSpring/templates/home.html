@@ -17,7 +17,7 @@ Welcome, {{name}}!<br>
 <form action="/create-event" method="post">
     <input type="text" placeholder="Description" name="description" size="50"/>
     <input type="datetime-local" name="dateTime" value="{{now}}"/>
-    <input type="time-local" name="endTime" value="{{now}}"/>
+    <input type="datetime-local" name="endTime" value="{{now}}"/>
     <button type="submit">Add Event</button>
 </form>
 {{/user}}
