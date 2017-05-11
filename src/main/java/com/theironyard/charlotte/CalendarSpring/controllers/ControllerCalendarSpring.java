@@ -28,13 +28,17 @@ public class ControllerCalendarSpring {
     public String home(Model model, HttpSession session) {
         String userName = (String) session.getAttribute("userName");
         List<Event> eventEntities = events.findAllByOrderByDateTimeDesc(); //get all events and order by time ascending
+        List<Event> userEvents = events.findByUser(users.findFirstByName(userName));
+
         if (userName != null) {
             User user = users.findFirstByName(userName);
             model.addAttribute("user", user);
             model.addAttribute("now", currentTime);
             //truncated only puts the time down to the seconds not the milliseconds.
+
         }
         model.addAttribute("events", eventEntities);
+        model.addAttribute("userEvents", userEvents);
         return "home";
     }
 
@@ -43,12 +47,15 @@ public class ControllerCalendarSpring {
         String userName = (String) session.getAttribute("userName");
         LocalDateTime startTime = LocalDateTime.parse(dateTime);
         LocalDateTime eventEndTime = LocalDateTime.parse(endTime);
+        List<Event> timeCheck = events.findAllByDateTimeBetween(startTime, eventEndTime);
+        List<Event> timeCheckEnd = events.findAllByEndTimeBetween(startTime, eventEndTime);
         if (userName != null) {
-            if (currentTime.isBefore(startTime) && (startTime.isBefore(eventEndTime))) {
+            if (currentTime.isBefore(startTime) && startTime.isBefore(eventEndTime) && timeCheck.isEmpty() &&
+                   timeCheckEnd.isEmpty()) {
                 Event event = new Event(description, startTime, eventEndTime, users.findFirstByName(userName));
                 events.save(event);
             } else if (startTime.isBefore(eventEndTime)) {
-                System.out.println("Entered time of " + startTime + "is before " + eventEndTime);
+                System.out.println("Entered time of " + startTime + " is before " + eventEndTime);
             }
 
         } return "redirect:/";
