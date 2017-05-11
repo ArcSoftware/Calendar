@@ -1,36 +1,49 @@
 <!DOCTYPE html>
 <html>
+<head>
+    <link rel="stylesheet" href="/style.css">
+</head>
 <body>
-{{^user}}
-<form action="/login" method="post">
-    <input type="text" placeholder="Enter your name" name="name"/>
-    <button type="submit">Login</button>
-</form>
-{{/user}}
+    {{^userObject}}
+    <form action="/login" method="post">
+        <input type="text" placeholder="Enter your name" name="name"/>
+        <button type="submit">Login</button>
+    </form>
+    {{/userObject}}
 
-{{#user}}
-Welcome, {{name}}!<br>
-<form action="/logout" method="post">
-    <button type="submit">Logout</button>
-</form>
+    {{#userObject}}
+    <dev class = "container">Welcome, {{name}}!
+    <form action="/logout" method="post">
+        <button type="submit">Logout</button>
+    </form>
+    </dev>
 
-<br>
-<br>
-{{#userEvents}}
-{{description}} {{dateTime}} {{endTime}}<br>
-{{/userEvents}}
+    <form action="/create-event" method="post">
+        <input type="text" placeholder="Enter the name of your event here..." name="description" size="50"/>
+        <input type="datetime-local" name="dateTime" value="{{now}}"/>
+        <input type="time-local" name="endTime" value="{{now}}"/>
+        <button type="submit">Add Event</button>
+    </form>
 
-<form action="/create-event" method="post">
-    <input type="text" placeholder="Description" name="description" size="50"/>
-    <input type="datetime-local" name="dateTime" value="{{now}}"/>
-    <input type="time-local" name="endTime" value="{{now}}"/>
-    <button type="submit">Add Event</button>
-</form>
-{{/user}}
+    <br>
+    <br>
+    <dev> Here is a list of your current Events:</dev>
+    <br>
+    {{#userEvents}}
+    <b>Event Description: </b> {{description}}<br> <b> Start Time: </b>
+    {{dateTime}} <br><b>End Time:</b> {{endTime}}<br> <br>
+    {{/userEvents}}
 
-{{#events}}
-{{description}} {{dateTime}} {{endTime}}<br>
-{{/events}}
 
+    {{/userObject}}
+    <br>
+    <dev>Here is a list of all of the Events:</dev>
+    <br>
+    {{#events}}
+        <b>Event Owner:</b> {{user.name}}<br />
+        <b>Event Description:</b> {{description}}<br />
+        <b>Start Time:</b> {{dateTime}} <br />
+        <b>End Time:</b> {{endTime}}<br /><br />
+    {{/events}}
 </body>
 </html>

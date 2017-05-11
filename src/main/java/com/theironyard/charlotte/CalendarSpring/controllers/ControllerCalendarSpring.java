@@ -32,7 +32,7 @@ public class ControllerCalendarSpring {
 
         if (userName != null) {
             User user = users.findFirstByName(userName);
-            model.addAttribute("user", user);
+            model.addAttribute("userObject", user);
             model.addAttribute("now", currentTime);
             //truncated only puts the time down to the seconds not the milliseconds.
 
